@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  @apply bg-slate-950 text-slate-50 antialiased;
+  background-image:
+    radial-gradient(ellipse 90% 60% at 50% -10%, rgba(43, 45, 66, 0.6), transparent),
+    radial-gradient(ellipse 60% 50% at 90% 15%, rgba(217, 4, 41, 0.12), transparent),
+    radial-gradient(ellipse 55% 45% at 10% 85%, rgba(239, 35, 60, 0.08), transparent);
+  background-attachment: fixed;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-700/60 rounded-full hover:bg-slate-500/60 transition-colors;
+}
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+@layer components {
+  .glass-panel {
+    @apply bg-slate-900/50 backdrop-blur-2xl border border-slate-700/60 rounded-2xl shadow-glass;
+  }
+
+  .glass-card {
+    @apply bg-slate-800/30 backdrop-blur-xl border border-slate-700/40 rounded-xl transition-all duration-300;
+  }
+
+  .glass-card:hover {
+    @apply bg-slate-800/60 border-slate-500/50 shadow-glow-slate -translate-y-0.5;
+  }
+
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-palette-white via-slate-100 to-brandRed-500;
+  }
+
+  .btn-primary {
+    @apply px-5 py-2.5 rounded-xl bg-gradient-to-r from-brandRed-500 to-brandRed-600 hover:from-brandRed-400 hover:to-brandRed-500
+    backdrop-blur-xl text-palette-white font-medium border border-brandRed-400/40 shadow-glow-red active:scale-[0.98] transition-all duration-200;
+  }
+
+  .btn-ghost {
+    @apply px-5 py-2.5 rounded-xl border border-slate-700/60 bg-slate-800/30 backdrop-blur-xl text-slate-100
+    hover:bg-slate-700/50 hover:border-slate-500/60 hover:text-palette-white active:scale-[0.98] transition-all duration-200;
+  }
+}
