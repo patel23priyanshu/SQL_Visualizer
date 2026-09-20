@@ -19,11 +19,11 @@ export default function PlaygroundPage() {
   return (
     <main className="min-h-screen pb-20">
       <nav className="flex items-center justify-between max-w-7xl mx-auto px-6 py-6">
-        <Link href="/" className="flex items-center gap-2 text-sm text-slate-300 hover:text-palette-white transition-colors font-mono">
-          <ArrowLeft size={15} className="text-brandRed-500" /> Back
+        <Link href="/" className="flex items-center gap-2 text-sm text-muted hover:text-lime transition-colors font-mono uppercase tracking-wider">
+          <ArrowLeft size={15} /> [BACK]
         </Link>
-        <span className="font-semibold text-slate-50 tracking-tight">
-          SQL<span className="gradient-text">Visualizer</span>
+        <span className="font-mono font-bold text-white tracking-wider uppercase">
+          SQL_<span className="text-lime">VIZ</span>
         </span>
         <div className="w-16" />
       </nav>
@@ -35,9 +35,9 @@ export default function PlaygroundPage() {
             <button
               key={ex.title}
               onClick={() => setSql(ex.sql)}
-              className="text-xs px-3 py-1.5 rounded-full glass-card text-slate-300 hover:text-palette-white hover:border-brandRed-500/50"
+              className="text-xs px-3 py-1.5 rounded-sm font-mono uppercase tracking-wider border border-base-600 bg-base-800 text-muted hover:text-lime hover:border-lime/30 transition-colors"
             >
-              {ex.title}
+              [{ex.title}]
             </button>
           ))}
         </div>
@@ -50,9 +50,9 @@ export default function PlaygroundPage() {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="glass-panel p-5 border-brandRed-500/40 text-sm text-slate-200 bg-brandRed-950/40"
+                className="hk-panel p-5 border-red-500/30 text-sm text-red-400 font-mono"
               >
-                Couldn&apos;t fully parse this query: {display.error}. Showing best-effort clause detection below.
+                // ERROR: Couldn&apos;t fully parse this query: {display.error}. Showing best-effort clause detection below. //
               </motion.div>
             ) : null}
 

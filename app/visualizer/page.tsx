@@ -3,7 +3,7 @@
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import DataFlowVisualizer from "@/components/DataFlowVisualizer";
-import { Table, Sparkles } from "lucide-react";
+import { Table } from "lucide-react";
 
 function VisualizerContent() {
   const searchParams = useSearchParams();
@@ -14,25 +14,23 @@ function VisualizerContent() {
 export default function VisualizerPage() {
   return (
     <main className="min-h-screen pb-20 max-w-7xl mx-auto px-6 pt-6 space-y-6">
-      <div className="flex items-center justify-between border-b border-slate-700/50 pb-6">
+      <div className="flex items-center justify-between border-b border-base-600 pb-6">
         <div>
-          <div className="inline-flex items-center gap-2 text-xs font-medium text-palette-white bg-slate-800/80 border border-brandRed-500/40 rounded-full px-3 py-1 mb-2">
-            <Sparkles size={12} className="text-brandRed-500" />
+          <div className="inline-flex items-center gap-2 text-xs font-mono text-lime bg-lime/10 border border-lime/30 rounded-sm px-3 py-1 mb-2 uppercase tracking-widest">
+            <span className="text-lime">■</span>
             Interactive Row-Level Data Flow Engine
           </div>
-          <h1 className="text-3xl font-bold text-slate-50 tracking-tight flex items-center gap-3">
-            <div className="p-1 rounded-lg bg-brandRed-500/20 text-brandRed-500">
-              <Table size={26} />
-            </div>
-            Data Flow Visualizer
+          <h1 className="text-2xl font-bold text-white tracking-tight flex items-center gap-3 font-mono uppercase">
+            <Table size={24} className="text-lime" />
+            // Data Flow Visualizer //
           </h1>
-          <p className="text-sm text-slate-300 mt-1">
-            Write any SQL query — watch it transform the sample data (10 rows × 5 columns) clause-by-clause with animated row filtering, grouping, and window function rankings.
+          <p className="text-sm text-muted mt-1 font-mono">
+            Watch queries transform predefined sample data (10 rows &times; 5 columns) clause-by-clause with animated row filtering, grouping, and directional flow arrows.
           </p>
         </div>
       </div>
 
-      <Suspense fallback={<div className="glass-panel p-8 text-center text-slate-300">Loading visualizer...</div>}>
+      <Suspense fallback={<div className="hk-panel p-8 text-center text-muted font-mono uppercase tracking-wider">// Loading visualizer... //</div>}>
         <VisualizerContent />
       </Suspense>
     </main>

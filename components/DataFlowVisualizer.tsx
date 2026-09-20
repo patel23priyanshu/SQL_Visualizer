@@ -46,7 +46,7 @@ ORDER BY salary DESC;`
   const filteredRowsCount = activeStep.rows.length - passedRowsCount;
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       {/* SQL Editor */}
       <SqlEditor
         value={sql}
@@ -58,16 +58,14 @@ ORDER BY salary DESC;`
       />
 
       {/* Execution Pipeline Steps Nav */}
-      <div className="glass-panel p-6 space-y-5">
+      <div className="hk-panel p-6 space-y-5">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="p-1 rounded-md bg-brandRed-500/20 text-brandRed-500 border border-brandRed-500/30">
-              <Layers size={17} />
-            </div>
-            <h2 className="text-base font-semibold text-slate-50">Data Execution Flow</h2>
+          <div className="flex items-center gap-2.5">
+            <Layers size={18} className="text-lime" />
+            <h2 className="text-sm font-mono font-bold text-white uppercase tracking-wider">Data Execution Flow</h2>
           </div>
-          <span className="text-xs font-mono text-slate-300 bg-slate-800/80 px-3 py-1 rounded-full border border-slate-700/60">
-            Step {currentStepIndex + 1} of {steps.length}
+          <span className="text-xs font-mono text-lime bg-lime/10 px-3 py-1 rounded-sm border border-lime/30">
+            [{String(currentStepIndex + 1).padStart(2, "0")}] of [{String(steps.length).padStart(2, "0")}]
           </span>
         </div>
 
@@ -78,25 +76,25 @@ ORDER BY salary DESC;`
               <button
                 onClick={() => { setIsPlaying(false); setCurrentStepIndex(idx); }}
                 className={cn(
-                  "relative px-4 py-2.5 rounded-xl border text-xs font-medium font-mono backdrop-blur-md transition-all duration-300",
+                  "relative px-4 py-2.5 rounded-sm border text-xs font-medium font-mono uppercase tracking-wider transition-all duration-300",
                   idx === currentStepIndex
-                    ? "bg-gradient-to-r from-brandRed-500 to-brandRed-600 border-brandRed-400 text-palette-white shadow-glow-red scale-105"
+                    ? "bg-lime/15 border-lime/70 text-lime shadow-glow-lime-sm"
                     : idx < currentStepIndex
-                    ? "bg-slate-800/60 border-slate-600/60 text-slate-200 hover:bg-slate-800/90 hover:text-palette-white"
-                    : "bg-slate-900/40 border-slate-700/40 text-slate-400 hover:text-slate-300"
+                    ? "bg-base-800 border-base-600 text-muted-light"
+                    : "bg-base-900 border-base-700 text-muted-dark"
                 )}
               >
                 {idx === currentStepIndex && (
                   <motion.span
                     layoutId="step-active-glow"
-                    className="absolute inset-0 rounded-xl bg-brandRed-400/20 animate-pulseGlow"
+                    className="absolute inset-0 rounded-sm bg-lime/10 animate-pulseGlow"
                   />
                 )}
-                <span className="relative">{st.stepLabel}</span>
+                <span className="relative">[{String(idx + 1).padStart(2, "0")}] {st.stepLabel}</span>
               </button>
               {idx < steps.length - 1 && (
-                <div className="mx-1.5 text-slate-600 flex items-center">
-                  <ChevronRight size={16} />
+                <div className="mx-1.5 text-base-600 flex items-center">
+                  <ChevronRight size={16} className={idx < currentStepIndex ? "text-lime/50" : ""} />
                 </div>
               )}
             </div>
@@ -104,27 +102,27 @@ ORDER BY salary DESC;`
         </div>
 
         {/* Playback Controls */}
-        <div className="flex items-center justify-between border-t border-slate-700/50 pt-4">
-          <p className="text-xs text-slate-300 font-mono">{activeStep.summaryText}</p>
+        <div className="flex items-center justify-between border-t border-base-600 pt-4">
+          <p className="text-xs text-muted-light font-mono">{activeStep.summaryText}</p>
           <div className="flex items-center gap-2">
             <button
               onClick={() => { setIsPlaying(false); setCurrentStepIndex((i) => Math.max(0, i - 1)); }}
               disabled={currentStepIndex === 0}
-              className="p-2 rounded-full glass-card text-slate-300 hover:text-palette-white disabled:opacity-30"
+              className="p-2 rounded-sm border border-base-600 bg-base-800 text-muted hover:text-lime hover:border-lime/30 disabled:opacity-30 transition-colors"
               title="Previous step"
             >
               <ChevronLeft size={16} />
             </button>
             <button
               onClick={() => { setIsPlaying(false); setCurrentStepIndex(0); }}
-              className="p-2 rounded-full glass-card text-slate-300 hover:text-palette-white"
+              className="p-2 rounded-sm border border-base-600 bg-base-800 text-muted hover:text-lime hover:border-lime/30 transition-colors"
               title="Restart"
             >
               <RotateCcw size={16} />
             </button>
             <button
               onClick={() => { if (currentStepIndex >= steps.length - 1) setCurrentStepIndex(0); setIsPlaying((p) => !p); }}
-              className="btn-primary p-2.5 rounded-full"
+              className="btn-primary p-2.5 rounded-sm"
               title={isPlaying ? "Pause" : "Play"}
             >
               {isPlaying ? <Pause size={16} /> : <Play size={16} />}
@@ -132,7 +130,7 @@ ORDER BY salary DESC;`
             <button
               onClick={() => { setIsPlaying(false); setCurrentStepIndex((i) => Math.min(steps.length - 1, i + 1)); }}
               disabled={currentStepIndex === steps.length - 1}
-              className="p-2 rounded-full glass-card text-slate-300 hover:text-palette-white disabled:opacity-30"
+              className="p-2 rounded-sm border border-base-600 bg-base-800 text-muted hover:text-lime hover:border-lime/30 disabled:opacity-30 transition-colors"
               title="Next step"
             >
               <ChevronRight size={16} />
@@ -149,40 +147,40 @@ ORDER BY salary DESC;`
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -15 }}
           transition={{ duration: 0.3 }}
-          className="glass-panel p-6 space-y-4 overflow-hidden"
+          className="hk-panel p-6 space-y-4 overflow-hidden"
         >
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-base font-semibold text-slate-50">{activeStep.stepLabel}</h3>
-              <p className="text-xs text-slate-300 mt-0.5">{activeStep.description}</p>
+              <h3 className="text-sm font-mono font-bold text-white uppercase tracking-wider">{activeStep.stepLabel}</h3>
+              <p className="text-xs text-muted mt-0.5">{activeStep.description}</p>
             </div>
             <div className="flex items-center gap-3 text-xs font-mono">
-              <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-800/80 border border-slate-600/60 text-palette-white">
-                <Check size={13} className="text-slate-200" /> Passed ({passedRowsCount})
+              <span className="flex items-center gap-1.5 px-3 py-1 rounded-sm bg-lime/10 border border-lime/30 text-lime">
+                <Check size={13} className="text-lime" /> Passed ({passedRowsCount})
               </span>
               {filteredRowsCount > 0 && (
-                <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-brandRed-950/50 border border-brandRed-700/50 text-brandRed-400">
-                  <X size={13} className="text-brandRed-500" /> Filtered ({filteredRowsCount})
+                <span className="flex items-center gap-1.5 px-3 py-1 rounded-sm bg-red-500/10 border border-red-500/30 text-red-400">
+                  <X size={13} className="text-red-400" /> Filtered ({filteredRowsCount})
                 </span>
               )}
             </div>
           </div>
 
           {/* Data Table */}
-          <div className="overflow-x-auto rounded-xl border border-slate-700/50 bg-slate-950/40 backdrop-blur-xl">
+          <div className="overflow-x-auto rounded-sm border border-base-600 bg-base-950">
             <table className="w-full text-left text-xs font-mono border-collapse">
               <thead>
-                <tr className="border-b border-slate-700/60 bg-slate-900/70 text-slate-300 uppercase tracking-wider">
-                  <th className="py-3 px-4 w-12 text-center">Status</th>
+                <tr className="border-b border-base-600 bg-base-900 text-lime uppercase tracking-wider">
+                  <th className="py-3 px-4 w-12 text-center">STATUS</th>
                   {activeStep.columns.map((col) => (
                     <th key={col} className="py-3 px-4">{col}</th>
                   ))}
                   {activeStep.rows.some((r) => r.filterReason) && (
-                    <th className="py-3 px-4 text-right">Condition</th>
+                    <th className="py-3 px-4 text-right">CONDITION</th>
                   )}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60">
+              <tbody className="divide-y divide-base-700">
                 {activeStep.rows.map((item, rIdx) => (
                   <motion.tr
                     key={item.row.id || item.row.department || rIdx}
@@ -192,17 +190,17 @@ ORDER BY salary DESC;`
                     className={cn(
                       "transition-all duration-300",
                       item.passed
-                        ? "bg-slate-800/20 text-slate-100 hover:bg-slate-800/40"
-                        : "bg-slate-950/50 text-slate-500 line-through opacity-45 hover:opacity-70"
+                        ? "bg-base-900/50 text-slate-200 hover:bg-base-800"
+                        : "bg-transparent text-muted-dark line-through opacity-40 hover:opacity-60"
                     )}
                   >
                     <td className="py-3 px-4 text-center">
                       {item.passed ? (
-                        <div className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-slate-700/60 text-palette-white border border-slate-500/50">
+                        <div className="inline-flex items-center justify-center w-5 h-5 rounded-sm bg-lime/15 text-lime border border-lime/30">
                           <Check size={11} />
                         </div>
                       ) : (
-                        <div className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-brandRed-950/60 text-brandRed-500 border border-brandRed-700/50">
+                        <div className="inline-flex items-center justify-center w-5 h-5 rounded-sm bg-red-500/15 text-red-400 border border-red-500/30">
                           <X size={11} />
                         </div>
                       )}
@@ -218,10 +216,10 @@ ORDER BY salary DESC;`
                       <td className="py-3 px-4 text-right text-[11px]">
                         <span
                           className={cn(
-                            "px-2.5 py-0.5 rounded-full border text-[10px]",
+                            "px-2.5 py-0.5 rounded-sm border text-[10px] font-mono",
                             item.passed
-                              ? "bg-slate-800/70 border-slate-600/50 text-palette-white"
-                              : "bg-brandRed-950/60 border-brandRed-800/50 text-brandRed-400"
+                              ? "bg-lime/10 border-lime/30 text-lime"
+                              : "bg-base-800 border-base-600 text-muted-dark"
                           )}
                         >
                           {item.filterReason || "—"}
@@ -235,10 +233,10 @@ ORDER BY salary DESC;`
           </div>
 
           {/* Flow Indicator */}
-          <div className="flex items-center justify-center gap-2 pt-1 text-slate-400 text-xs font-mono">
-            <ArrowDown size={14} className="animate-bounce text-brandRed-500" />
+          <div className="flex items-center justify-center gap-2 pt-1 text-muted text-xs font-mono uppercase tracking-wider">
+            <ArrowDown size={14} className="animate-bounce text-lime" />
             <span>Data stream transforming to next execution phase</span>
-            <ArrowDown size={14} className="animate-bounce text-brandRed-500" />
+            <ArrowDown size={14} className="animate-bounce text-lime" />
           </div>
         </motion.div>
       </AnimatePresence>

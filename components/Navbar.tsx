@@ -2,29 +2,29 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Table, GraduationCap, Code2, Sparkles } from "lucide-react";
+import { Table, GraduationCap, BookOpen, Code2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function Navbar() {
   const pathname = usePathname();
 
   const navLinks = [
-    { href: "/visualizer", label: "Data Flow Visualizer", icon: Table },
-    { href: "/practice",   label: "Practice Hub",          icon: GraduationCap },
-    { href: "/playground", label: "Custom Editor",          icon: Code2 },
+    { href: "/visualizer", label: "DATA_FLOW", icon: Table },
+    { href: "/practice",   label: "PRACTICE",  icon: GraduationCap },
+    { href: "/tutorials",  label: "TUTORIALS", icon: BookOpen },
+    { href: "/playground", label: "EDITOR",     icon: Code2 },
   ];
 
   return (
-    <header className="sticky top-0 z-50 backdrop-blur-2xl bg-slate-950/60 border-b border-slate-700/50 px-6 py-4">
+    <header className="sticky top-0 z-50 bg-base-950/90 backdrop-blur-sm border-b border-base-600 px-6 py-3">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2.5 font-semibold text-slate-50 tracking-tight text-lg">
-          <div className="p-1.5 rounded-lg bg-brandRed-500/20 border border-brandRed-500/40 text-brandRed-500 shadow-glow-red">
-            <Sparkles size={18} />
-          </div>
-          <span>SQL<span className="gradient-text font-bold">Visualizer</span></span>
+        <Link href="/" className="flex items-center gap-2.5 font-mono text-sm tracking-wider">
+          <span className="text-lime text-base">■</span>
+          <span className="text-white font-bold">SQL_VIZ</span>
+          <span className="text-muted text-xs">// QUERY //</span>
         </Link>
 
-        <nav className="flex items-center gap-1.5 bg-slate-900/60 p-1.5 rounded-2xl border border-slate-700/50 backdrop-blur-xl">
+        <nav className="flex items-center gap-1">
           {navLinks.map((link) => {
             const Icon = link.icon;
             const active = pathname === link.href;
@@ -33,14 +33,14 @@ export default function Navbar() {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "flex items-center gap-2 text-xs font-medium px-4 py-2 rounded-xl transition-all duration-200",
+                  "flex items-center gap-2 text-xs font-mono uppercase tracking-wider px-4 py-2 rounded-sm transition-all duration-200",
                   active
-                    ? "bg-gradient-to-r from-brandRed-500 to-brandRed-600 text-palette-white border border-brandRed-400/50 shadow-glow-red"
-                    : "text-slate-300 hover:text-palette-white hover:bg-slate-800/40"
+                    ? "bg-lime/10 text-lime border border-lime/40"
+                    : "text-muted-light hover:text-white hover:bg-white/[0.04] border border-transparent"
                 )}
               >
-                <Icon size={15} className={active ? "text-palette-white" : "text-slate-400"} />
-                <span>{link.label}</span>
+                <Icon size={14} className={active ? "text-lime" : "text-muted"} />
+                <span>[{link.label}]</span>
               </Link>
             );
           })}

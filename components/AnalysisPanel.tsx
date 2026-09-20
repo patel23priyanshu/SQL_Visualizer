@@ -5,51 +5,57 @@ import type { AnalysisResult } from "@/lib/executionOrder";
 import { cn } from "@/lib/utils";
 
 const difficultyColor: Record<AnalysisResult["difficulty"], string> = {
-  Beginner:     "text-slate-200 border-slate-600/50 bg-slate-800/70 backdrop-blur-md",
-  Intermediate: "text-palette-white border-slate-500/60 bg-slate-700/60 backdrop-blur-md",
-  Advanced:     "text-brandRed-400 border-brandRed-700/50 bg-brandRed-950/50 backdrop-blur-md",
-  Expert:       "text-palette-white border-brandRed-500/60 bg-gradient-to-r from-brandRed-500/30 to-brandRed-600/30 backdrop-blur-md",
+  Beginner: "text-lime border-lime/30 bg-lime/10",
+  Intermediate: "text-yellow-400 border-yellow-400/30 bg-yellow-400/10",
+  Advanced: "text-orange-400 border-orange-400/30 bg-orange-400/10",
+  Expert: "text-red-400 border-red-400/30 bg-red-400/10",
 };
 
 export default function AnalysisPanel({ analysis }: { analysis: AnalysisResult }) {
   const stats: { label: string; value: number | string }[] = [
-    { label: "Joins",        value: analysis.joinCount },
-    { label: "Subqueries",   value: analysis.subqueryCount },
-    { label: "CTEs",         value: analysis.cteCount },
-    { label: "Aggregates",   value: analysis.aggregateCount },
-    { label: "Window fns",   value: analysis.windowFunctionCount },
-    { label: "Complexity",   value: analysis.estimatedComplexity },
+    { label: "Joins", value: analysis.joinCount },
+    { label: "Subqueries", value: analysis.subqueryCount },
+    { label: "CTEs", value: analysis.cteCount },
+    { label: "Aggregates", value: analysis.aggregateCount },
+    { label: "Window fns", value: analysis.windowFunctionCount },
+    { label: "Complexity", value: analysis.estimatedComplexity },
   ];
 
   return (
-    <div className="glass-panel p-5 space-y-4">
+    <div className="hk-panel p-5 space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-slate-100">Query Analysis</h3>
-        <span className={cn("text-xs font-medium px-2.5 py-1 rounded-full border", difficultyColor[analysis.difficulty])}>
+        <h3 className="text-sm font-mono font-bold text-white uppercase tracking-wider">// Query Analysis //</h3>
+        <span
+          className={cn(
+            "text-xs font-medium px-2.5 py-1 rounded-sm border font-mono uppercase",
+            difficultyColor[analysis.difficulty]
+          )}
+        >
           {analysis.difficulty}
         </span>
       </div>
 
       <div className="grid grid-cols-3 gap-3">
         {stats.map((s) => (
-          <div key={s.label} className="glass-card p-3 text-center">
-            <div className="text-lg font-semibold text-palette-white font-mono">{s.value}</div>
-            <div className="text-[11px] text-slate-400 mt-0.5">{s.label}</div>
+          <div key={s.label} className="hk-card p-3 text-center">
+            <div className="text-lg font-semibold text-white font-mono">{s.value}</div>
+            <div className="text-[11px] text-muted mt-0.5 font-mono uppercase tracking-wider">{s.label}</div>
           </div>
         ))}
       </div>
 
       <div>
-        <div className="flex justify-between text-xs text-slate-400 mb-1.5 font-mono">
+        <div className="flex justify-between text-xs text-muted font-mono uppercase tracking-wider mb-1.5">
           <span>Readability</span>
-          <span className="text-brandRed-400 font-semibold">{analysis.readabilityScore}/100</span>
+          <span>{analysis.readabilityScore}/100</span>
         </div>
-        <div className="h-2 rounded-full bg-slate-800/80 backdrop-blur-md overflow-hidden border border-slate-700/50">
+        <div className="h-2 rounded-sm bg-base-700 overflow-hidden">
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: `${analysis.readabilityScore}%` }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="h-full rounded-full bg-gradient-to-r from-brandRed-600 via-brandRed-500 to-slate-200"
+            className="h-full rounded-sm"
+            style={{ background: "linear-gradient(to right, #a8d600, #C8FF00)" }}
           />
         </div>
       </div>
