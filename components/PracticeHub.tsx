@@ -19,6 +19,7 @@ export default function PracticeHub() {
   const [showHint, setShowHint] = useState<boolean>(false);
   const [solved, setSolved] = useState<Set<string>>(new Set());
   const [categoryPanelOpen, setCategoryPanelOpen] = useState(false);
+  const [mobileQuestionsOpen, setMobileQuestionsOpen] = useState(false);
   const [verificationResult, setVerificationResult] = useState<{
     status: "idle" | "success" | "failure";
     message: string;
@@ -33,6 +34,7 @@ export default function PracticeHub() {
     setUserSql(q.starterSql);
     setShowHint(false);
     setVerificationResult({ status: "idle", message: "" });
+    setMobileQuestionsOpen(false);
   };
 
   const handleVerify = () => {
@@ -64,9 +66,9 @@ export default function PracticeHub() {
   const isSolved = solved.has(activeQuestion.id);
 
   return (
-    <div className="relative space-y-5">
-      {/* ── Collapsible Category Sidebar (Right Edge) ── */}
-      <div className="fixed right-0 top-1/2 -translate-y-1/2 z-50 flex items-center">
+    <div className="relative space-y-4 sm:space-y-5">
+      {/* ── Collapsible Category Sidebar (Right Edge) — hidden on mobile ── */}
+      <div className="hidden md:flex fixed right-0 top-1/2 -translate-y-1/2 z-50 items-center">
         {/* Tab Handle — always visible */}
         <button
           onClick={() => setCategoryPanelOpen((o) => !o)}
@@ -171,10 +173,133 @@ export default function PracticeHub() {
         </AnimatePresence>
       </div>
 
+      {/* ── Mobile Category Filter (inline, above questions) ── */}
+      <div className="md:hidden">
+        <div className="hk-panel p-3">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2 text-xs text-muted font-mono uppercase tracking-wider">
+              <Filter size={13} className="text-lime" />
+              <span>[FILTER]</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-[10px] font-mono text-lime bg-lime/10 px-2 py-0.5 rounded-sm border border-lime/30">
+              <Trophy size={11} className="text-lime" />
+              <span>[{solved.size}/{practiceQuestions.length}]</span>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            <button
+              onClick={() => setSelectedCategory("All")}
+              className={cn(
+                "text-[10px] px-2 py-1 rounded-sm font-mono uppercase tracking-wider transition-all duration-200 border",
+                selectedCategory === "All"
+                  ? "bg-lime/15 border-lime/50 text-lime"
+                  : "bg-base-800 border-base-600 text-muted"
+              )}
+            >
+              All ({practiceQuestions.length})
+            </button>
+            {questionCategories.map((cat) => {
+              const count = practiceQuestions.filter((q) => q.category === cat).length;
+              return (
+                <button
+                  key={cat}
+                  onClick={() => setSelectedCategory(cat)}
+                  className={cn(
+                    "text-[10px] px-2 py-1 rounded-sm font-mono uppercase tracking-wider transition-all duration-200 border",
+                    selectedCategory === cat
+                      ? "bg-lime/15 border-lime/50 text-lime"
+                      : "bg-base-800 border-base-600 text-muted"
+                  )}
+                >
+                  {cat} ({count})
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Mobile Question Selector (collapsible) ── */}
+      <div className="lg:hidden">
+        <button
+          onClick={() => setMobileQuestionsOpen((o) => !o)}
+          className="w-full hk-panel p-3 flex items-center justify-between"
+        >
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="text-xs font-mono text-lime uppercase tracking-wider shrink-0">
+              [{activeQuestion.category.split(" ")[0]}]
+            </span>
+            <span className="text-sm font-semibold text-white truncate">
+              {activeQuestion.title}
+            </span>
+          </div>
+          <ChevronLeft
+            size={14}
+            className={cn(
+              "text-lime shrink-0 transition-transform duration-200",
+              mobileQuestionsOpen ? "rotate-90" : "-rotate-90"
+            )}
+          />
+        </button>
+
+        <AnimatePresence>
+          {mobileQuestionsOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="overflow-hidden"
+            >
+              <div className="space-y-2 pt-2 max-h-[50vh] overflow-y-auto scrollbar-thin">
+                {filteredQuestions.map((q) => {
+                  const qSolved = solved.has(q.id);
+                  return (
+                    <button
+                      key={q.id}
+                      onClick={() => handleSelectQuestion(q)}
+                      className={cn(
+                        "w-full text-left p-3 rounded-sm border transition-all duration-300 block",
+                        activeQuestion.id === q.id
+                          ? "bg-lime/10 border-lime/40 shadow-glow-lime-sm"
+                          : "hk-card"
+                      )}
+                    >
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-[10px] font-mono text-lime uppercase tracking-wider">
+                          {q.category}
+                        </span>
+                        <div className="flex items-center gap-1.5">
+                          {qSolved && (
+                            <CheckCircle2 size={12} className="text-lime" />
+                          )}
+                          <span
+                            className={cn(
+                              "text-[9px] px-1.5 py-0.5 rounded-sm border font-mono uppercase",
+                              q.difficulty === "Beginner"     && "text-lime border-lime/30 bg-lime/10",
+                              q.difficulty === "Intermediate" && "text-yellow-400 border-yellow-400/30 bg-yellow-400/10",
+                              q.difficulty === "Advanced"     && "text-orange-400 border-orange-400/30 bg-orange-400/10",
+                              q.difficulty === "Expert"       && "text-red-400 border-red-400/30 bg-red-400/10"
+                            )}
+                          >
+                            {q.difficulty}
+                          </span>
+                        </div>
+                      </div>
+                      <h4 className="text-xs font-semibold text-white">{q.title}</h4>
+                    </button>
+                  );
+                })}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
       {/* Main Grid: Sidebar + Workspace */}
-      <div className="grid lg:grid-cols-[300px_1fr] gap-5">
-        {/* Sidebar Question List */}
-        <div className="space-y-3">
+      <div className="grid lg:grid-cols-[280px_1fr] gap-4 sm:gap-5">
+        {/* Sidebar Question List — hidden on mobile (replaced by collapsible above) */}
+        <div className="hidden lg:block space-y-3">
           <h3 className="text-xs font-mono text-muted uppercase tracking-widest px-1">
             // QUESTIONS ({filteredQuestions.length}) //
           </h3>
@@ -222,36 +347,36 @@ export default function PracticeHub() {
         </div>
 
         {/* Workspace */}
-        <div className="space-y-5">
+        <div className="space-y-4 sm:space-y-5 min-w-0">
           {/* Question Details Card */}
-          <div className="hk-panel p-6 space-y-4">
-            <div className="flex items-start justify-between border-b border-base-600 pb-4 gap-4">
-              <div>
-                <div className="flex items-center gap-2 mb-1.5">
-                  <span className="text-xs font-mono text-lime bg-lime/10 px-2.5 py-0.5 rounded-sm border border-lime/30 uppercase tracking-wider">
+          <div className="hk-panel p-4 sm:p-6 space-y-3 sm:space-y-4">
+            <div className="flex flex-wrap items-start justify-between border-b border-base-600 pb-3 sm:pb-4 gap-2 sm:gap-4">
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-1.5">
+                  <span className="text-[10px] sm:text-xs font-mono text-lime bg-lime/10 px-2 sm:px-2.5 py-0.5 rounded-sm border border-lime/30 uppercase tracking-wider">
                     [{activeQuestion.category}]
                   </span>
-                  <span className="text-xs text-muted font-mono">• {activeQuestion.difficulty}</span>
+                  <span className="text-[10px] sm:text-xs text-muted font-mono">• {activeQuestion.difficulty}</span>
                   {isSolved && (
-                    <span className="flex items-center gap-1 text-xs text-lime bg-lime/10 px-2.5 py-0.5 rounded-sm border border-lime/30 font-mono uppercase">
+                    <span className="flex items-center gap-1 text-[10px] sm:text-xs text-lime bg-lime/10 px-2 sm:px-2.5 py-0.5 rounded-sm border border-lime/30 font-mono uppercase">
                       <Trophy size={11} className="text-lime" /> SOLVED
                     </span>
                   )}
                 </div>
-                <h2 className="text-lg font-bold text-white">{activeQuestion.title}</h2>
+                <h2 className="text-base sm:text-lg font-bold text-white">{activeQuestion.title}</h2>
               </div>
             </div>
 
-            <p className="text-sm text-slate-300 leading-relaxed">{activeQuestion.problem}</p>
+            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">{activeQuestion.problem}</p>
 
             {/* Expected Output Columns */}
             <div className="space-y-1.5">
-              <span className="text-xs font-mono text-muted uppercase tracking-wider">// Expected Output Columns //</span>
-              <div className="flex flex-wrap gap-1.5">
+              <span className="text-[10px] sm:text-xs font-mono text-muted uppercase tracking-wider">// Expected Output Columns //</span>
+              <div className="flex flex-wrap gap-1 sm:gap-1.5">
                 {activeQuestion.expectedColumns.map((col) => (
                   <span
                     key={col}
-                    className="text-xs font-mono px-2.5 py-1 rounded-sm bg-base-800 border border-base-600 text-slate-200"
+                    className="text-[10px] sm:text-xs font-mono px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-sm bg-base-800 border border-base-600 text-slate-200"
                   >
                     {col}
                   </span>
@@ -260,16 +385,16 @@ export default function PracticeHub() {
             </div>
 
             {/* Hint Toggle */}
-            <div className="flex items-center gap-3 pt-1">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3 pt-1">
               <button
                 onClick={() => setShowHint((h) => !h)}
-                className="text-xs text-yellow-400 hover:text-yellow-300 flex items-center gap-1.5 font-mono uppercase tracking-wider transition-colors"
+                className="text-[10px] sm:text-xs text-yellow-400 hover:text-yellow-300 flex items-center gap-1.5 font-mono uppercase tracking-wider transition-colors"
               >
                 <Lightbulb size={13} className="text-yellow-400" />
                 [{showHint ? "HIDE_HINT" : "SHOW_HINT"}]
               </button>
               {isSolved && (
-                <span className="text-xs text-muted flex items-center gap-1 font-mono uppercase tracking-wider">
+                <span className="text-[10px] sm:text-xs text-muted flex items-center gap-1 font-mono uppercase tracking-wider">
                   <BookOpen size={12} className="text-lime" />
                   Scroll below for explanation
                 </span>
@@ -283,7 +408,7 @@ export default function PracticeHub() {
                   initial={{ opacity: 0, y: 5 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -5 }}
-                  className="p-4 rounded-sm bg-yellow-400/[0.06] border border-yellow-400/20 text-xs text-yellow-200/90 font-mono space-y-1"
+                  className="p-3 sm:p-4 rounded-sm bg-yellow-400/[0.06] border border-yellow-400/20 text-[10px] sm:text-xs text-yellow-200/90 font-mono space-y-1"
                 >
                   <span className="font-semibold text-yellow-400 flex items-center gap-1.5 uppercase tracking-wider">
                     <Lightbulb size={12} className="text-yellow-400" /> // HINT //
@@ -300,7 +425,7 @@ export default function PracticeHub() {
                   initial={{ opacity: 0, y: 5 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -5 }}
-                  className="p-4 rounded-sm bg-lime/[0.04] border border-lime/20 text-xs text-slate-200 space-y-2"
+                  className="p-3 sm:p-4 rounded-sm bg-lime/[0.04] border border-lime/20 text-[10px] sm:text-xs text-slate-200 space-y-2"
                 >
                   <span className="font-semibold text-lime font-mono flex items-center gap-1.5 uppercase tracking-wider">
                     <BookOpen size={13} className="text-lime" /> // SOLUTION EXPLANATION //
@@ -308,7 +433,7 @@ export default function PracticeHub() {
                   <p className="leading-relaxed text-slate-300">{activeQuestion.explanation}</p>
                   <button
                     onClick={() => router.push(`/visualizer?sql=${encodeURIComponent(activeQuestion.solutionSql)}`)}
-                    className="mt-2 flex items-center gap-1.5 text-xs text-lime hover:text-lime-400 transition-colors font-mono uppercase tracking-wider"
+                    className="mt-2 flex items-center gap-1.5 text-[10px] sm:text-xs text-lime hover:text-lime-400 transition-colors font-mono uppercase tracking-wider"
                   >
                     <Eye size={13} /> [VISUALIZE_SOLUTION]
                   </button>
@@ -321,33 +446,33 @@ export default function PracticeHub() {
           <SqlEditor value={userSql} onChange={setUserSql} onVisualize={handleVerify} />
 
           {/* Verification Bar */}
-          <div className="hk-panel p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
+          <div className="hk-panel p-3 sm:p-4 flex flex-col gap-3">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               <button
                 onClick={handleVerify}
-                className="btn-primary flex items-center gap-2 text-xs"
+                className="btn-primary flex items-center gap-2 text-[10px] sm:text-xs"
               >
                 <Play size={14} /> RUN & VERIFY
               </button>
               <button
                 onClick={() => router.push(`/visualizer?sql=${encodeURIComponent(userSql)}`)}
-                className="btn-ghost flex items-center gap-2 text-xs"
+                className="btn-ghost flex items-center gap-2 text-[10px] sm:text-xs"
               >
                 <Eye size={14} /> [VISUALIZE_QUERY]
               </button>
             </div>
 
             {verificationResult.status !== "idle" && (
-              <div className="flex items-center gap-2 text-xs font-mono">
+              <div className="flex items-center gap-2 text-[10px] sm:text-xs font-mono">
                 {verificationResult.status === "success" ? (
-                  <span className="text-lime flex items-center gap-1.5 bg-lime/10 px-3 py-1.5 rounded-sm border border-lime/30 uppercase tracking-wider">
-                    <CheckCircle2 size={15} className="text-lime" />
-                    {verificationResult.message}
+                  <span className="text-lime flex items-center gap-1.5 bg-lime/10 px-2 sm:px-3 py-1 sm:py-1.5 rounded-sm border border-lime/30 uppercase tracking-wider">
+                    <CheckCircle2 size={14} className="text-lime shrink-0" />
+                    <span className="break-words">{verificationResult.message}</span>
                   </span>
                 ) : (
-                  <span className="text-red-400 flex items-center gap-1.5 bg-red-500/10 px-3 py-1.5 rounded-sm border border-red-500/30 uppercase tracking-wider">
-                    <XCircle size={15} className="text-red-400" />
-                    {verificationResult.message}
+                  <span className="text-red-400 flex items-center gap-1.5 bg-red-500/10 px-2 sm:px-3 py-1 sm:py-1.5 rounded-sm border border-red-500/30 uppercase tracking-wider">
+                    <XCircle size={14} className="text-red-400 shrink-0" />
+                    <span className="break-words">{verificationResult.message}</span>
                   </span>
                 )}
               </div>

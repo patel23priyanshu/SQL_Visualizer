@@ -5,28 +5,28 @@ export default function LandingPage() {
   return (
     <main className="min-h-screen pb-20">
       {/* Hero */}
-      <section className="max-w-5xl mx-auto px-6 pt-20 pb-16 text-center">
-        <div className="inline-flex items-center gap-2 text-xs font-mono text-lime bg-lime/10 border border-lime/30 rounded-sm px-3.5 py-1 mb-6 uppercase tracking-widest">
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 pt-10 sm:pt-20 pb-10 sm:pb-16 text-center">
+        <div className="inline-flex items-center gap-2 text-[10px] sm:text-xs font-mono text-lime bg-lime/10 border border-lime/30 rounded-sm px-2.5 sm:px-3.5 py-1 mb-4 sm:mb-6 uppercase tracking-widest">
           <span className="text-lime">■</span>
           Interactive SQL Learning Platform
         </div>
 
-        <h1 className="hk-heading text-3xl md:text-5xl text-white mb-4 leading-tight">
+        <h1 className="hk-heading text-2xl sm:text-3xl md:text-5xl text-white mb-3 sm:mb-4 leading-tight">
           SQL_VISUALIZER
         </h1>
 
-        <p className="text-lime font-mono text-sm uppercase tracking-[0.3em] mb-4">
+        <p className="text-lime font-mono text-xs sm:text-sm uppercase tracking-[0.2em] sm:tracking-[0.3em] mb-3 sm:mb-4">
           // LEARN. PRACTICE. MASTER. //
         </p>
 
-        <p className="text-muted-light text-base max-w-2xl mx-auto mb-12 leading-relaxed">
+        <p className="text-muted-light text-sm sm:text-base max-w-2xl mx-auto mb-8 sm:mb-12 leading-relaxed px-2">
           Interactive row-level data transformations on sample datasets, paired with categorized practice problems covering Window Functions, Aggregates, Ranking, and CTEs.
         </p>
 
         {/* 3 Main Parts Showcase Cards */}
-        <div className="grid md:grid-cols-3 gap-6 text-left max-w-6xl mx-auto mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 text-left max-w-6xl mx-auto mb-10 sm:mb-16">
           {/* Part 1 Card */}
-          <div className="hk-panel p-8 relative overflow-hidden flex flex-col justify-between group hover:border-lime/40 transition-all duration-300">
+          <div className="hk-panel p-5 sm:p-8 relative overflow-hidden flex flex-col justify-between group hover:border-lime/40 transition-all duration-300">
             <div>
               <div className="flex items-center justify-between mb-4">
                 <span className="text-xs font-mono text-lime uppercase tracking-widest">[01]</span>
@@ -62,7 +62,7 @@ export default function LandingPage() {
           </div>
 
           {/* Part 2 Card */}
-          <div className="hk-panel p-8 relative overflow-hidden flex flex-col justify-between group hover:border-lime/40 transition-all duration-300">
+          <div className="hk-panel p-5 sm:p-8 relative overflow-hidden flex flex-col justify-between group hover:border-lime/40 transition-all duration-300">
             <div>
               <div className="flex items-center justify-between mb-4">
                 <span className="text-xs font-mono text-lime uppercase tracking-widest">[02]</span>
@@ -98,7 +98,7 @@ export default function LandingPage() {
           </div>
 
           {/* Part 3 Card */}
-          <div className="hk-panel p-8 relative overflow-hidden flex flex-col justify-between group hover:border-lime/40 transition-all duration-300">
+          <div className="hk-panel p-5 sm:p-8 relative overflow-hidden flex flex-col justify-between group hover:border-lime/40 transition-all duration-300">
             <div>
               <div className="flex items-center justify-between mb-4">
                 <span className="text-xs font-mono text-lime uppercase tracking-widest">[03]</span>

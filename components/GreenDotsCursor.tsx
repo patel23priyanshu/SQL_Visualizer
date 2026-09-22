@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface Dot {
   x: number;
@@ -16,8 +16,20 @@ export default function GreenDotsCursor() {
   const mouseRef = useRef({ x: -1000, y: -1000 });
   const dotsRef = useRef<Dot[]>([]);
   const animRef = useRef<number>(0);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    // Detect mobile/touch devices — disable animation entirely on small screens
+    const mql = window.matchMedia("(max-width: 768px)");
+    const checkMobile = () => setIsMobile(mql.matches);
+    checkMobile();
+    mql.addEventListener("change", checkMobile);
+    return () => mql.removeEventListener("change", checkMobile);
+  }, []);
+
+  useEffect(() => {
+    if (isMobile) return; // Don't run canvas animation on mobile
+
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -26,7 +38,6 @@ export default function GreenDotsCursor() {
     const SPACING = 45;
     const DOT_SIZE = 1.5;
     const INFLUENCE_RADIUS = 160;
-    const MAX_DISPLACEMENT = 12;
 
     function createDots() {
       const dots: Dot[] = [];
@@ -108,7 +119,10 @@ export default function GreenDotsCursor() {
       document.removeEventListener("mouseleave", handleMouseLeave);
       cancelAnimationFrame(animRef.current);
     };
-  }, []);
+  }, [isMobile]);
+
+  // Don't render canvas at all on mobile — saves memory and CPU
+  if (isMobile) return null;
 
   return (
     <canvas

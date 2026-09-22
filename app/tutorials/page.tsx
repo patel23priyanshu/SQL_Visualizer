@@ -1,191 +1,262 @@
 "use client";
 
-import Link from "next/link";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   BookOpen,
-  ArrowRight,
   Filter,
-  GitMerge,
-  Sparkles,
-  Terminal,
-  Layers,
-  Clock,
+  ChevronLeft,
+  ChevronRight,
+  CheckCircle2,
+  FileText,
+  Lock,
 } from "lucide-react";
+import {
+  tutorialTopics,
+  tutorialCategories,
+  TutorialCategory,
+} from "@/lib/tutorialTopics";
+import { cn } from "@/lib/utils";
 
 export default function TutorialsPage() {
-  const upcomingCategories = [
-    {
-      code: "CAT_01",
-      title: "SELECT & Filtering",
-      badge: "FUNDAMENTALS",
-      description:
-        "Master SELECT, WHERE, DISTINCT, ORDER BY, and LIMIT query clauses with filtering mechanics.",
-      icon: Filter,
-    },
-    {
-      code: "CAT_02",
-      title: "Multi-Table JOINs",
-      badge: "RELATIONAL",
-      description:
-        "Understand INNER, LEFT, RIGHT, FULL OUTER, CROSS, and self-joins with Venn-diagram breakdowns.",
-      icon: GitMerge,
-    },
-    {
-      code: "CAT_03",
-      title: "Window Functions",
-      badge: "ANALYTICS",
-      description:
-        "Deep-dive into OVER(), PARTITION BY, RANK(), DENSE_RANK(), and sliding frame windows.",
-      icon: Sparkles,
-    },
-    {
-      code: "CAT_04",
-      title: "Subqueries & CTEs",
-      badge: "ADVANCED",
-      description:
-        "Write correlated subqueries, WITH common table expressions, and recursive database queries.",
-      icon: Terminal,
-    },
-    {
-      code: "CAT_05",
-      title: "Aggregates & GROUP BY",
-      badge: "GROUPING",
-      description:
-        "Aggregate row sets with COUNT, SUM, AVG, MIN, MAX, HAVING conditions, and multidimensional rollups.",
-      icon: Layers,
-    },
-    {
-      code: "CAT_06",
-      title: "Execution & Indexing",
-      badge: "OPTIMIZATION",
-      description:
-        "Learn database query execution lifecycles, B-Tree indexes, scan operations, and performance tuning.",
-      icon: Clock,
-    },
-  ];
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [categoryPanelOpen, setCategoryPanelOpen] = useState(false);
+
+  const filteredTopics =
+    selectedCategory === "All"
+      ? tutorialTopics
+      : tutorialTopics.filter((t) => t.category === selectedCategory);
 
   return (
-    <main className="min-h-screen pb-20 max-w-7xl mx-auto px-6 pt-6 space-y-8">
+    <main className="min-h-screen pb-20 max-w-7xl mx-auto px-4 sm:px-6 pt-4 sm:pt-6 space-y-4 sm:space-y-6">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-base-600 pb-6 gap-4">
-        <div>
-          <div className="inline-flex items-center gap-2 text-xs font-mono text-lime bg-lime/10 border border-lime/30 rounded-sm px-3 py-1 mb-2 uppercase tracking-widest">
-            <span className="text-lime">■</span>
-            SQL Learning Tutorials
-          </div>
-          <h1 className="text-2xl font-bold text-white tracking-tight flex items-center gap-3 font-mono uppercase">
-            <BookOpen size={24} className="text-lime" />
-            // SQL TUTORIALS //
-          </h1>
-          <p className="text-sm text-muted mt-1 font-mono">
-            A comprehensive written learning section covering core SQL syntax, execution concepts, and real-world database query patterns.
-          </p>
+      <div className="border-b border-base-600 pb-4 sm:pb-6">
+        <div className="inline-flex items-center gap-2 text-[10px] sm:text-xs font-mono text-lime bg-lime/10 border border-lime/30 rounded-sm px-2.5 sm:px-3 py-1 mb-2 uppercase tracking-widest">
+          <span className="text-lime">■</span>
+          SQL Learning Tutorials
         </div>
+        <h1 className="text-lg sm:text-2xl font-bold text-white tracking-tight flex items-center gap-2 sm:gap-3 font-mono uppercase">
+          <BookOpen size={20} className="text-lime shrink-0 sm:w-6 sm:h-6" />
+          // SQL TUTORIALS //
+        </h1>
+        <p className="text-xs sm:text-sm text-muted mt-1 font-mono">
+          Learn SQL step-by-step through small, focused topics. Read each article to build your foundation from basics to advanced queries.
+        </p>
       </div>
 
-      {/* Central Empty State / Coming Soon */}
-      <div className="hk-panel p-6 sm:p-10 text-center max-w-4xl mx-auto space-y-8 relative overflow-hidden">
-        {/* Terminal Status Bar */}
-        <div className="flex items-center justify-between border-b border-base-600/70 pb-3 text-xs font-mono text-muted uppercase tracking-wider">
-          <div className="flex items-center gap-2">
-            <span className="inline-block w-2.5 h-2.5 rounded-full bg-red-500/80" />
-            <span className="inline-block w-2.5 h-2.5 rounded-full bg-yellow-500/80" />
-            <span className="inline-block w-2.5 h-2.5 rounded-full bg-lime/80" />
-            <span className="ml-2 text-muted-light">// MODULE: TUTORIALS_INDEX</span>
-          </div>
-          <div className="flex items-center gap-2 text-lime">
-            <span className="w-2 h-2 rounded-full bg-lime animate-pulse" />
-            <span>PHASE 3 // STATUS: IN_PROGRESS</span>
-          </div>
-        </div>
+      {/* ── Collapsible Category Sidebar (Right Edge) — desktop only ── */}
+      <div className="hidden md:flex fixed right-0 top-1/2 -translate-y-1/2 z-50 items-center">
+        <button
+          onClick={() => setCategoryPanelOpen((o) => !o)}
+          className="flex items-center justify-center w-7 h-16 rounded-l-md bg-base-800 border border-r-0 border-lime/30 text-lime hover:bg-base-700 transition-colors"
+          aria-label={categoryPanelOpen ? "Close category panel" : "Open category panel"}
+        >
+          {categoryPanelOpen ? (
+            <ChevronRight size={16} />
+          ) : (
+            <ChevronLeft size={16} />
+          )}
+        </button>
 
-        {/* Center Empty State Card */}
-        <div className="flex flex-col items-center justify-center space-y-4 py-4">
-          <div className="p-5 rounded-md bg-lime/10 border border-lime/30 text-lime shadow-glow-lime-sm">
-            <BookOpen size={48} className="text-lime" />
-          </div>
+        <AnimatePresence>
+          {categoryPanelOpen && (
+            <motion.div
+              initial={{ width: 0, opacity: 0 }}
+              animate={{ width: 260, opacity: 1 }}
+              exit={{ width: 0, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 320, damping: 30 }}
+              className="overflow-hidden bg-base-900 border border-base-600 rounded-l-md shadow-xl"
+            >
+              <div className="w-[260px] p-4 space-y-4">
+                {/* Heading */}
+                <div className="flex items-center gap-2 text-xs text-muted font-mono uppercase tracking-wider pb-2 border-b border-base-600">
+                  <Filter size={14} className="text-lime" />
+                  <span>[CATEGORIES]</span>
+                </div>
 
-          <div className="inline-flex items-center gap-1.5 text-xs font-mono text-muted uppercase tracking-widest">
-            <span className="text-lime">[SYSTEM_STATUS]</span>
-            <span>::</span>
-            <span>CURRICULUM_INITIALIZING</span>
-          </div>
-
-          <h2 className="text-2xl md:text-3xl font-bold text-white tracking-wider font-mono uppercase">
-            Tutorials Coming Soon
-          </h2>
-
-          <p className="text-xs sm:text-sm text-muted-light max-w-xl font-mono leading-relaxed">
-            Written tutorials are currently being prepared. You will soon have access to step-by-step reading modules, clause-by-clause visual diagrams, and hands-on code walkthroughs for all core SQL topics.
-          </p>
-
-          <div className="p-3 bg-base-950/80 border border-base-600 rounded-sm text-xs font-mono text-muted max-w-xl">
-            <span className="text-lime uppercase font-semibold">// UPCOMING TRACKS: </span>
-            Comprehensive modules will be available for <span className="text-white">SELECT</span>, <span className="text-white">JOINs</span>, <span className="text-white">Window Functions</span>, <span className="text-white">Subqueries</span>, <span className="text-white">Aggregates</span>, and more.
-          </div>
-        </div>
-
-        {/* Upcoming Categories Grid */}
-        <div className="border-t border-base-600/70 pt-6 text-left">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-mono text-lime uppercase tracking-widest">
-              // PREVIEW OF PLANNED CATEGORIES //
-            </span>
-            <span className="text-[11px] font-mono text-muted uppercase tracking-wider">
-              [6 MODULES QUEUED]
-            </span>
-          </div>
-
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
-            {upcomingCategories.map((cat) => {
-              const Icon = cat.icon;
-              return (
-                <div
-                  key={cat.code}
-                  className="hk-card p-4 flex flex-col justify-between group"
+                {/* "All" Checkbox */}
+                <label
+                  className="flex items-center gap-2.5 cursor-pointer group"
+                  onClick={() => setSelectedCategory("All")}
                 >
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <div className="p-1.5 rounded-sm bg-lime/10 text-lime border border-lime/30 w-fit">
-                        <Icon size={16} />
-                      </div>
-                      <span className="text-[10px] font-mono text-muted uppercase tracking-wider">
-                        {cat.badge}
-                      </span>
-                    </div>
-                    <h3 className="text-sm font-bold text-white font-mono uppercase tracking-wider">
-                      {cat.title}
-                    </h3>
-                    <p className="text-xs text-muted font-mono leading-relaxed">
-                      {cat.description}
-                    </p>
-                  </div>
-                  <div className="mt-4 pt-2 border-t border-base-600/50 flex items-center justify-between text-[11px] font-mono">
-                    <span className="text-lime">{cat.code}</span>
-                    <span className="text-muted uppercase tracking-wider">[QUEUED]</span>
+                  <span
+                    className={cn(
+                      "flex items-center justify-center w-4 h-4 rounded-sm border transition-all duration-200",
+                      selectedCategory === "All"
+                        ? "bg-lime/20 border-lime/60"
+                        : "bg-base-800 border-base-600 group-hover:border-muted"
+                    )}
+                  >
+                    {selectedCategory === "All" && (
+                      <CheckCircle2 size={12} className="text-lime" />
+                    )}
+                  </span>
+                  <span
+                    className={cn(
+                      "text-xs font-mono uppercase tracking-wider transition-colors",
+                      selectedCategory === "All"
+                        ? "text-lime"
+                        : "text-muted group-hover:text-white"
+                    )}
+                  >
+                    All Topics ({tutorialTopics.length})
+                  </span>
+                </label>
+
+                {/* Category Checkboxes */}
+                <div className="space-y-2.5">
+                  {tutorialCategories.map((cat) => {
+                    const count = tutorialTopics.filter(
+                      (t) => t.category === cat
+                    ).length;
+                    const isActive = selectedCategory === cat;
+                    return (
+                      <label
+                        key={cat}
+                        className="flex items-center gap-2.5 cursor-pointer group"
+                        onClick={() => setSelectedCategory(cat)}
+                      >
+                        <span
+                          className={cn(
+                            "flex items-center justify-center w-4 h-4 rounded-sm border transition-all duration-200",
+                            isActive
+                              ? "bg-lime/20 border-lime/60"
+                              : "bg-base-800 border-base-600 group-hover:border-muted"
+                          )}
+                        >
+                          {isActive && (
+                            <CheckCircle2 size={12} className="text-lime" />
+                          )}
+                        </span>
+                        <span
+                          className={cn(
+                            "text-xs font-mono uppercase tracking-wider transition-colors",
+                            isActive
+                              ? "text-lime"
+                              : "text-muted group-hover:text-white"
+                          )}
+                        >
+                          {cat} ({count})
+                        </span>
+                      </label>
+                    );
+                  })}
+                </div>
+
+                {/* Topic counter */}
+                <div className="pt-3 border-t border-base-600">
+                  <div className="flex items-center gap-1.5 text-xs font-mono text-lime bg-lime/10 px-3 py-1.5 rounded-sm border border-lime/30">
+                    <FileText size={13} className="text-lime" />
+                    <span>[{tutorialTopics.length}] TOPICS TOTAL</span>
                   </div>
                 </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* ── Mobile Category Filter (inline) ── */}
+      <div className="md:hidden">
+        <div className="hk-panel p-3">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2 text-xs text-muted font-mono uppercase tracking-wider">
+              <Filter size={13} className="text-lime" />
+              <span>[FILTER]</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-[10px] font-mono text-lime bg-lime/10 px-2 py-0.5 rounded-sm border border-lime/30">
+              <FileText size={11} className="text-lime" />
+              <span>[{tutorialTopics.length}] TOPICS</span>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            <button
+              onClick={() => setSelectedCategory("All")}
+              className={cn(
+                "text-[10px] px-2 py-1 rounded-sm font-mono uppercase tracking-wider transition-all duration-200 border",
+                selectedCategory === "All"
+                  ? "bg-lime/15 border-lime/50 text-lime"
+                  : "bg-base-800 border-base-600 text-muted"
+              )}
+            >
+              All ({tutorialTopics.length})
+            </button>
+            {tutorialCategories.map((cat) => {
+              const count = tutorialTopics.filter(
+                (t) => t.category === cat
+              ).length;
+              return (
+                <button
+                  key={cat}
+                  onClick={() => setSelectedCategory(cat)}
+                  className={cn(
+                    "text-[10px] px-2 py-1 rounded-sm font-mono uppercase tracking-wider transition-all duration-200 border",
+                    selectedCategory === cat
+                      ? "bg-lime/15 border-lime/50 text-lime"
+                      : "bg-base-800 border-base-600 text-muted"
+                  )}
+                >
+                  {cat} ({count})
+                </button>
               );
             })}
           </div>
         </div>
-
-        {/* Action Buttons */}
-        <div className="border-t border-base-600/70 pt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
-          <Link
-            href="/practice"
-            className="btn-primary inline-flex items-center justify-center gap-2 text-xs w-full sm:w-auto"
-          >
-            PRACTICE PROBLEMS NOW <ArrowRight size={14} />
-          </Link>
-          <Link
-            href="/visualizer"
-            className="btn-ghost inline-flex items-center justify-center gap-2 text-xs w-full sm:w-auto"
-          >
-            [LAUNCH DATA FLOW] <ArrowRight size={14} />
-          </Link>
-        </div>
       </div>
+
+      {/* ── Topics Header ── */}
+      <div className="flex items-center justify-between">
+        <h3 className="text-xs font-mono text-muted uppercase tracking-widest px-1">
+          // {selectedCategory === "All" ? "ALL TOPICS" : selectedCategory.toUpperCase()} ({filteredTopics.length}) //
+        </h3>
+      </div>
+
+      {/* ── Topics Grid ── */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+        {filteredTopics.map((topic, index) => (
+          <motion.div
+            key={topic.id}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.03, duration: 0.2 }}
+            className="hk-card p-4 sm:p-5 flex flex-col justify-between group cursor-pointer"
+          >
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] sm:text-xs font-mono text-lime uppercase tracking-wider">
+                  [{topic.category}]
+                </span>
+                <Lock size={12} className="text-muted/50" />
+              </div>
+              <h3 className="text-sm sm:text-base font-bold text-white font-mono">
+                {topic.title}
+              </h3>
+              <p className="text-[10px] sm:text-xs text-muted font-mono leading-relaxed">
+                {topic.description}
+              </p>
+            </div>
+            <div className="mt-3 pt-2 border-t border-base-600/50 flex items-center justify-between">
+              <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-mono text-muted uppercase tracking-wider">
+                <FileText size={11} className="text-muted/60" />
+                <span>COMING SOON</span>
+              </div>
+              <span className="text-[10px] font-mono text-lime/40 uppercase tracking-wider">
+                [{topic.id.replace("sql-", "").replace(/-/g, "_")}]
+              </span>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Empty state when filter returns 0 */}
+      {filteredTopics.length === 0 && (
+        <div className="hk-panel p-8 sm:p-12 text-center">
+          <BookOpen size={36} className="text-muted/30 mx-auto mb-3" />
+          <p className="text-sm text-muted font-mono uppercase tracking-wider">
+            No topics found in this category
+          </p>
+        </div>
+      )}
     </main>
   );
 }

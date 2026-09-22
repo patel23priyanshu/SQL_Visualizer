@@ -60,24 +60,27 @@ export default function SqlEditor({ value, onChange, onVisualize }: SqlEditorPro
         </div>
       </div>
 
-      <Editor
-        height="280px"
-        defaultLanguage="sql"
-        theme="vs-dark"
-        value={value}
-        onChange={(v) => onChange(v ?? "")}
-        options={{
-          fontSize: 14,
-          fontFamily: "JetBrains Mono, ui-monospace, monospace",
-          minimap: { enabled: false },
-          padding: { top: 16, bottom: 16 },
-          scrollBeyondLastLine: false,
-          lineNumbersMinChars: 3,
-          renderLineHighlight: "gutter",
-          smoothScrolling: true,
-          cursorBlinking: "smooth",
-        }}
-      />
+      <div className="h-[200px] sm:h-[280px] w-full">
+        <Editor
+          height="100%"
+          defaultLanguage="sql"
+          theme="vs-dark"
+          value={value}
+          onChange={(v) => onChange(v ?? "")}
+          options={{
+            fontSize: 13,
+            fontFamily: "JetBrains Mono, ui-monospace, monospace",
+            minimap: { enabled: false },
+            padding: { top: 12, bottom: 12 },
+            scrollBeyondLastLine: false,
+            lineNumbersMinChars: 3,
+            renderLineHighlight: "gutter",
+            smoothScrolling: true,
+            cursorBlinking: "smooth",
+            wordWrap: "on",
+          }}
+        />
+      </div>
 
       <div className="flex justify-end px-4 py-3 border-t border-base-600">
         <motion.button
